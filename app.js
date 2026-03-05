@@ -63,6 +63,16 @@ function startTimer(seconds) {
         }
     }, 1000);
 }
+function normalizeText(s) {
+    if (s === null || s === undefined) return "";
+    return String(s)
+        .toLowerCase()
+        .normalize("NFD")                 // sépare accents
+        .replace(/[\u0300-\u036f]/g, "")  // supprime accents
+        .replace(/[^a-z0-9\s]/g, " ")     // enlève ponctuation
+        .replace(/\s+/g, " ")             // espaces multiples
+        .trim();
+}
 
 function renderMedia(q) {
     const box = $("media");
@@ -168,6 +178,39 @@ function renderQuestion() {
         });
     }
 
+    if (q.type === "text") {
+        const row = document.createElement("div");
+        row.className = "choice";
+        row.style.flexDirection = "column";
+        row.style.alignItems = "stretch";
+        row.innerHTML = `
+      <label class="muted" style="margin-bottom:6px;">Ta réponse :</label>
+      <input id="text-answer" type="text" placeholder="Écris ici..." style="padding:10px;border-radius:10px;border:1px solid var(--border);background:#0b1220;color:var(--text);" />
+    `;
+        form.appendChild(row);
+
+        const input = $("text-answer");
+        input.addEventListener("input", () => {
+            // active next seulement si non vide
+            setNextEnabled(normalizeText(input.value).length > 0);
+        });
+    }
+
+    if (q.type === "rank") {
+        (q.ranks ?? []).forEach((label, idx) => {
+            const id = `r${idx}`;
+            const row = document.createElement("label");
+            row.className = "choice";
+            row.innerHTML = `
+        <input type="radio" name="rank" value="${label}" />
+        <span>${label}</span>
+      `;
+            form.appendChild(row);
+        });
+
+        form.addEventListener("change", () => setNextEnabled(true));
+    }
+
     const time = q.timeSec ?? QUIZ.meta?.defaultTimeSec ?? 60;
     startTimer(time);
 }
@@ -189,6 +232,15 @@ function collectAnswer(q) {
     if (q.type === "guess_number") {
         const slider = $("guess-slider");
         return slider ? Number(slider.value) : null;
+    }
+    if (q.type === "text") {
+        const input = $("text-answer");
+        return input ? input.value : null;
+    }
+
+    if (q.type === "rank") {
+        const checked = form.querySelector("input[type=radio]:checked");
+        return checked ? checked.value : null;
     }
     return null;
 }
@@ -226,6 +278,17 @@ function scoreQuestion(q, userValue) {
         if (diff <= tol.good) return { points: pts.good, correct: true };
         if (diff <= tol.ok) return { points: pts.ok, correct: true };
         return { points: pts.miss, correct: false };
+    }
+    if (q.type === "text") {
+        const user = normalizeText(userValue);
+        const accepted = (q.acceptedAnswers ?? []).map(normalizeText);
+        const correct = user.length > 0 && accepted.includes(user);
+        return { points: correct ? (q.points ?? 1) : 0, correct };
+    }
+
+    if (q.type === "rank") {
+        const correct = userValue === q.answer;
+        return { points: correct ? (q.points ?? 1) : 0, correct };
     }
 
     return { points: 0, correct: false };
@@ -304,6 +367,8 @@ function formatExpected(q) {
     if (q.type === "mcq") return ` • Attendu : <code>${q.answer}</code>`;
     if (q.type === "multi") return ` • Attendu : <code>${q.answer.join(", ")}</code>`;
     if (q.type === "guess_number") return ` • Attendu : <code>${q.answerNumber}</code>`;
+    if (q.type === "text") return ` • Attendu : <code>${(q.acceptedAnswers ?? []).join(" | ")}</code>`;
+    if (q.type === "rank") return ` • Attendu : <code>${q.answer}</code>`;
     return "";
 }
 

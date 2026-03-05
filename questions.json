@@ -92,6 +92,48 @@
                 "ok": 1,
                 "miss": 0
             }
+        },
+        {
+            "id": "q_text_lol",
+            "type": "text",
+            "title": "Quel est ce jeu ?",
+            "timeSec": 60,
+            "prompt": "Écris le nom du jeu (plusieurs réponses peuvent être acceptées).",
+            "media": {
+                "type": "image",
+                "src": "assets/img/lol1.jpg"
+            },
+            "acceptedAnswers": [
+                "league of legends",
+                "league of legend",
+                "lol"
+            ],
+            "points": 1
+        },
+        {
+            "id": "q_rank_1",
+            "type": "rank",
+            "title": "Guess the rank",
+            "timeSec": 60,
+            "prompt": "Quel rank correspond le mieux à ce clip ?",
+            "media": {
+                "type": "video",
+                "src": "assets/video/clip1.mp4"
+            },
+            "ranks": [
+                "Iron",
+                "Bronze",
+                "Silver",
+                "Gold",
+                "Platinum",
+                "Emerald",
+                "Diamond",
+                "Master",
+                "Grandmaster",
+                "Challenger"
+            ],
+            "answer": "Gold",
+            "points": 2
         }
     ]
 }
