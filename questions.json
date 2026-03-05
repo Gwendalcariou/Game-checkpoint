@@ -1,0 +1,97 @@
+{
+    "meta": {
+        "title": "Gwen's Gamer Quiz",
+        "defaultTimeSec": 60
+    },
+    "questions": [
+        {
+            "id": "q1",
+            "type": "mcq",
+            "title": "Quel est ce jeu ?",
+            "timeSec": 60,
+            "prompt": "Regarde l'image et choisis la bonne réponse.",
+            "media": {
+                "type": "image",
+                "src": "assets/img/sample1.jpg"
+            },
+            "choices": [
+                {
+                    "id": "a",
+                    "label": "League of Legends"
+                },
+                {
+                    "id": "b",
+                    "label": "Valorant"
+                },
+                {
+                    "id": "c",
+                    "label": "CS2"
+                },
+                {
+                    "id": "d",
+                    "label": "Overwatch"
+                }
+            ],
+            "answer": "b",
+            "points": 1
+        },
+        {
+            "id": "q2",
+            "type": "multi",
+            "title": "Quels persos sont dans League of Legends ?",
+            "timeSec": 60,
+            "prompt": "Coche toutes les bonnes réponses.",
+            "choices": [
+                {
+                    "id": "a",
+                    "label": "Jinx"
+                },
+                {
+                    "id": "b",
+                    "label": "Reinhardt"
+                },
+                {
+                    "id": "c",
+                    "label": "Ahri"
+                },
+                {
+                    "id": "d",
+                    "label": "Mario"
+                }
+            ],
+            "answer": [
+                "a",
+                "c"
+            ],
+            "points": 2
+        },
+        {
+            "id": "q3",
+            "type": "guess_number",
+            "title": "Guess the Elo",
+            "timeSec": 60,
+            "prompt": "À ton avis, quel Elo/rang correspond au clip ?",
+            "media": {
+                "type": "video",
+                "src": "assets/video/sample1.mp4"
+            },
+            "range": {
+                "min": 0,
+                "max": 3000,
+                "step": 10
+            },
+            "answerNumber": 1450,
+            "tolerance": {
+                "perfect": 50,
+                "good": 150,
+                "ok": 300
+            },
+            "points": {
+                "perfect": 3,
+                "good": 2,
+                "ok": 1,
+                "miss": 0
+            }
+        }
+    ]
+}
