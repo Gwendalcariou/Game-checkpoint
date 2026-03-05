@@ -116,8 +116,10 @@ function renderQuestion() {
     $("q-prompt").textContent = q.prompt ?? "";
     renderMedia(q);
 
-    const form = $("answer-form");
-    form.innerHTML = "";
+    const oldForm = $("answer-form");
+    const form = oldForm.cloneNode(false);
+    oldForm.parentNode.replaceChild(form, oldForm);
+
     setNextEnabled(false);
 
     if (q.type === "mcq") {
